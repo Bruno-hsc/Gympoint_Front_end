@@ -1,0 +1,299 @@
+
+-> yarn create react-app myapp
+
+-> yarn add babel-plugin-root-import eslint-import-resolver-babel-plugin-root-import -D
+
+-> yarn add react-router-dom
+
+-> yarn add history
+
+-> OBS: ver sobre o cors no backend
+
+---------------- INICIO
+
+-> 1 - crias na pasta src as patas: pages(crias as pages), routes e services.
+
+-> 2 - criar o arq src/routes/index.js
+  - vamos criar na pasta routes o arq Route.js para poder usar rotas privadas
+  e importar ele no index da pasta routes no lugar de importar o router do
+  react.
+  - importar o routes no App e fazer as conf com o history e o roter do react.
+
+-> 3 - conf o arq history, com o history vamos usar para navegar o usuario nas telas
+de todos os lugares inclusive de dentro do redux.
+
+-> criar as pages criando componentes react nelas.
+  - no arq index da pasta routes importar o switch e o routes.
+  - importar todas as paginas no arq index/routes.
+  - criar as rotas chamando seus componentes e passar os caminhos.
+  - importar no App.js as rotas
+  - no App.js importar o history(da pasta services) e o Router
+
+-> conf o reactotron
+  - yarn add reactotron-react-js
+  - criar a pasta confg e fazer a conf do reactrotron
+  - importar o reactotron no app.js
+  - 1 parte sem os use para o redux e o saga
+  - OBS: subscripios : auth e user (reducers cadastrados)
+  - rotar yarn start e ver se conectou com o reactrotorn
+
+-> Criar rotas privadas (Só pode ser acessada sobe alguma condição da nossa
+aplicação, por exp se o user esta logado ou se tem alguma permissao):
+  - criar dentro da pasta routes um component Route que é um componente proprio
+  de rotas e ao invez de importar no routes/index o route do react-router-dom
+  vamos importar nosso proprio componente route.
+  - configurar o arq Routes.js
+
+-> yarn add prop-types : fazer a validação no arq route.js
+
+-> Criar os layouts:
+  - dentro da pasta pages criar a pasta _layouts (_ so para ficar no inicio a
+  pasta).
+  -> yarn add styled-components
+  - OBS: as 2 telas de login e de cadastro são muito parecidas (centralização e
+  buttons), as telas onde o user esta altenticado são parecidas (header,
+  centralização e o fundo).
+  - Vamos construir layouts para quando o user estiver logado e nao logado.
+  - importar os 2 layouts no arq Route e fazer o condicional p/ rederizar um
+  ou outro.
+  - fazer a config das rotas privadas.
+
+-> Criar estilos globais
+  - vamos criar 2 layouts: 1 para quem está logado e outro para quem não está.
+  - criar a pasta styles e o arq global.js
+  - no app.js importar o global.js
+
+-> Root import: para navegar pelos arqvs da aplicação de uma forma mais simples.
+  - libs para poder customizar as confgs do abbel padrao que vem no create
+  react app:
+  -> yarn add customize-cra react-app-rewired -D
+  - criar  a pasta na raiz do projeto config-overrides.js
+    - é carregado automaticamente pelo rewired
+  -> yarn add babel-plugin-root-import -D
+  - no arq rotes trocar o .. por ~ nas importações
+  - trocar os scrips no package.json: start, build, test para: react-app-rewired
+  - no arq eslintrc fazer os settings.
+  - criar na raiz o jsconfig.json e configurar para quando clicar no caminho
+  com crtl redirecionar para o arq.
+
+-> fazer a estilização da pagina de autenticação
+  - como a pagina signin e signUp sao muito parecidas vamos deixar o arq de
+  estilização dentro da pasta de auth.
+  -> yarn add polished : para trabalhar com cores no styled component
+
+-> yarn add @rocketseat/unform : lib para lifar com formularios no react
+  - importar no signIn e no signUp o form e o input de dentro dessa lib
+
+-> yarn add yup : Validar campos no front e no back.
+  - importar ele no signIn e up
+  - fazer o obj de validação e estilizar os avisos no auth/style
+
+-> REDUX:para a parte de altenticação vamos fazer com o redux, isso é
+importatnte porq a parte do token que precisamos enviar em todas as
+requisições para api para
+determinar que o user esta logado para poder ter acesso as rotas protegidas da
+api precisa estar em um local que esta acessivel em toda a aplicação para que
+qualquer reg que faça possa ultilizar esse token e as inf do user logado mater
+no redux porq depois podemos ter acesso as inf do user logado.
+  - yarn add redux redux-saga react-redux reactotron-redux reactotron-redux-saga immer
+  - immer: para fazer a produção dos states no reducer.
+  - criar a pasta store (para confgs do redux) e o arq index.
+  - criar a pasta modules/auth/reducer.js e o arq actions e sagas.
+  - dentro da pasta modules criar o rootReducers que vai unir todos os reducers.
+  - criar o rootSagas que vai unir todos os sagas dos modules.
+  1 - O arq redux sempre é uma function, conf ele.
+  2 - No arq sagas criar  afunction.
+  3 - conf o rootReducer.
+  4 - conf o rootSaga
+  - finaliza conf inicial dos modules
+-> configurar o redux:
+  - no index da pasta store fazer as confgs.
+  - criar o arq createStore para separar a parte de criação do store para o arq
+  index.js da pasta store nao ficar muito grande.
+  - na pasta config, configurar o reaSctotron para ouvir o redux e o saga. No
+  arq reactotronConfig.js importar o reactotronRedux e reactotronSaga e da o
+  use nos 2 depois do .configure.
+  - no arq index criar a var sagaMonitor para caso esteja em ambiente de
+  desenvolvimento.
+  - cofigurar o enhacer no createStore.
+  - no App.js importart o provider do react redux.
+
+-> Fazer a parte de autenticação do user dentro do redux.
+  - Vamos receber um email e senha no redux saga, ele vai fazer uma chamada a
+  api do servidor do backend e vamos armazenar no reducer da aplicação essas
+  informações.
+  - no arq action.js vamos definir as actions que vamos usar.
+  - no arq sagas.js fazer o saga de autenticação.
+  - OBS: aqui faremos a chamada a api
+  - yarn add axios : Instalar o axios para chamar a api do backend.
+  - na pasta services criar o arq api.js.
+  - importar a api dentro do saga.
+  - no componente signIn importar a function useDispatch para disparar uma action
+  aqui é onde vai disparar a action de fazer login.
+  - configurar o reducer de auth.
+  - importar no route o store para redirecionar o user para uma rota
+  e trocar o signed de estatico p/ store.getState para pegar a inf se é um user
+  logado ou nao.
+
+
+-> Armazenar os dados do user.
+  - Criar um novo module com um reducer para armazenar.
+  - O modulo de auth vai armazernar se o user esta logado ou nao e o token.
+  - O modulo de user vai armazenar senha, avatar etc.
+  - Conf os arq do module de user.
+  - Cadastrar o novo reducer no rootReducer e no rootSaga.
+  - Essas inf vamos mostrar no header com os dados do user.
+  - após criar o novo module, criar uma subscription no reactotron para ver se
+  os dados estao indo direito.
+
+-> Persistir os dados de autenticação, para quando atualizar, reiniciar o pc ou
+fechar a pagina, a pagina não precisar logar novamente, so se o user deslogar.
+  - yarn add redux-persist : lib para persistir os dados no local storage.
+  - criar na pasta store o arq persistReducers.js
+  - No index da pasta store importar o metado persistStore e a function
+  persistReducers(function que criamos) e passar ela por volta do rootreducer.
+  - Com as alterações de exportação desse arq temos que corrigir o import do
+  store no arq App.js e no route.
+  - no App.js importar o persistGate e colocar ele por volta da aplicação mas
+  por
+  dentro so store.
+
+-> Fazer o loading da aplicação.
+  - no arq reducer do auth ouvir o signIn_Request e o failure.
+  - index do signIn, importar o uesSelector para conf o loading.
+  - conf o loading.
+  - add o try catch na function signIn no sagas do auth.
+
+-> Toasts: msgs personalizadas.
+  - yarn add react-toastify.
+  - Importar no app.js e colocar na renderização.
+  - no global.js importar os styles do react-toastify
+  - no sagas do auth importar o toast( onde queremos dar a msg)
+
+-> Fazer a parte de cadastro na aplicação.
+  - nas actions do auth criar as functions signUp.
+  - no index do signUp o importar o useDispatch e a actions de auth.
+  - fazer a function de cadastro.
+  - ouvir essa info no saga dentro do metado all criando outro takeLatest.
+  - criar no sagas a function signUp.
+
+-> Requisições autenticadas.
+  - Depois do user logar na aplicação todas as reqs a api incluir o token
+  no header de autorização no axios.
+  - no sagas do auth quando o user logar, depois que o processo der tudo certo
+  vamos pegar o obj api acessar uma prop chamada default de dentro do axios que
+  serve para sertar inf que serao ultilizadas em todas as reqs .headers para
+  pegar os headers de todas as reqs e setar um header chamado 'Authorization'
+  e setar o token exp: api.defaults.header.Authorization = `Bearer ${token}`
+  - para testar :
+    - no index do dashboard importar a api
+    - api.get('rota que queremos') : api.get('appointments')
+    - checar na aba network se esta aparecendo a inf do appointment.
+    -> OBS: quando o user da f5 o token se perde porq estamos setando o token
+    so quando o user passa pelo processo de login que é a function signIn dentro
+    do sagas da pasta auth, mas quando o user da f5 ele n passa de novo por esse
+    processo.
+    -> Quando usamos o persist e damos um f5 ele traz os dados do user no
+    persist/HEHYDRATE do reactotron. Dentro do saga de auth podemos ouvir
+    essa action.
+    - no sagas do auth ouvir essa action no metado all e criar o saga.
+    - depois desses passos toda a chamada a api vai enviar o token junto com a
+    chamada.
+
+-> Configurar o header.
+  - criar a pasta components e criar o header ( o header nao é especifico de
+  uma pagina, por isso criamos um component)
+
+-> api.adorable.io : site para gerar avatars quando ainda nao temos img.
+
+-> estilizando as notificações:
+  - criar nos componentes a pasta notifications.
+  - importar no header o componente notifications.
+  - montar o componente.
+  - yarn add react-icons
+  -> yarn add react-perfect-scrollbar : para fazer uma scrollbar, aqui vamos
+  usar para quando ouver muitas notificações, colocar uma scrollbar.
+  - criar um novo elemento 'Scroll' dentro da notificationList para envolver
+  todas as notificações.
+  - importar o PerfectScrollbar nos styles e fazer as confgs.
+  - olhando na documentação do perfect scrollbar qual o css precisamos aplicar
+  para esconder a lista fora da autura maxima e importamos dentro do arq global.
+
+-> Criar um estado para armazenar se a listagem de notificações esta visivel ou
+nao.
+  - no arq notifications importar o useState, criar os estados visible e
+  setVisible.
+  - fazer as conf de estado para o visible e setar o display do notificationList
+  nos styles de acordo com o valor dessa var.
+  - Carregar as notificações de dentro da api.
+    - importar a api no arq notifications.
+  - criar os estados de notification e setNotification.
+  - OBS: precisamos ver que dados vamos mostrar vindos do backend da rota de
+  notificações, vai vir o createdAt e vamos precisar fazer uma distancia relati
+  va entre o horario que o user esta acessando a informação, para isso vamos usar
+  o date-fns
+  -> yarn add date-fns@next (OBS: @next para pegar a versao mais recente)
+
+-> Ação de marcar a notificação como lida.
+  - criar no index do notification uma function assincrona handleMarkAsRead.
+  - tirar a bolinha laranja do sininho, ela tem que aparecer se holver alguma
+  notificação nao lida.
+  - usar o hook useMemo para calcular o valor se deve haver essa bolinha ou nao
+  se nao usar ele se mudase qualquer valor na notification ele iria mudar ate
+  se a var visible modar ele atualizaria esse valor.
+  - cria a condição para mostrar o button marcar como lida so se a msg ainda nao
+  tiver cido lida.
+
+-> Fazer a aparte do profile.
+  - farzer o arq profile.js.
+  - estilizar, essa parte do form vai ser parecida com os forms da parte da
+  pagina de sign in, OBS: poderiamos fazer um componente de form, mas como so
+  estamos usando em 2 lugares, vamos copiar alguns estilos do form do sing in.
+
+-> Atualizar profile.
+  - criar uma action no modulo de user para update do profile.
+  - No saga de user ouvir a action e fazer no arq saga a function de update.
+  - conectar a action dentro do arq index do profile usando o useDispatch.
+  - Atualizar no reducer de user as inf quando deu tudo certo.
+    - no arq reducer do user fazer um case ouvindo o reducer de updateProfile.
+
+
+-> Criar um input novo do unform dessa lib.
+  - Criar um novo component dentor d apasta profile: AvatarInput(OBS: como esse
+  componente vai ser especifico dessa pagina podemos criar ele dentro da mesma
+  pasta profile).
+  - importar esse componente no profile.
+  - vamos pegar o id da img do banco e usar no upload ou criação de user,
+  vamos passar so id da img.
+  - vamos fazer o pre viwe de img, ou seja, no inicio vai mostrar um avatar que
+  o user ja tem ou uma img de avatar gerada automaticamente que é essa que estamos
+  usanod da api.
+  - no index do AvatarInput usar o useEffect para dar um meio do unform acessar
+  a inf do input.
+  - no saga de user pegar tbm a inf do avatar para poder atualizar a foto no
+  bando tbm e colocar dentro da var profile no mesmo arq sagas.
+
+-> Colocar os dados no header, nome do user e avatar.
+  - no arq do header importar o uesSelector e fazer as conf.
+  - OBS: os estilos do header colocar a largura fixa para  aimagem que vai apare
+  cer no header.
+
+-> Fazer a parte do logout:
+  - nas actions do auth cria a action signOut
+  - no reducer ouvir essa action.
+  - precisa ouvir essa action tbm no reducer de user para setar o profile como
+  null.
+  - no arq saga do auth ouvir a ação signOut.
+  - importar no profile a aç signOut.
+
+-> estilizar o dashboard.
+
+-> Conf a lista de agendamnetos, uma ul do dashboard.
+
+-> Fazer navegação entre os dias.
+
+-> carregar as inf da api.
+  - definir qual a range de horarios disponiveis. (OBS: é melhor defenir a
+  range de horarios no backend porq é nele que fica a regra de negocio.
+  - yarn add date-fns-tz : para lidar com timezone nas datas.
+  - importar ela no dashboard
