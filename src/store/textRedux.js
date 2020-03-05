@@ -1,9 +1,24 @@
 /*
 -> useState: é o hook que vai pertencer a uma functio pra criar estados sem
- escrever ela no formato de classe.
+ escrever ela no formato de classe. Usado para criar estados dentro da propria
+ function. Nesse caso vamos armazenar uma lista nesse estado e add inf e
+ retira inf usando o estado.
+  - Ele retorna um array:
+  - 1 posisao é o estado em si: exp: ([tech, ]) : a lista de techs
+  - 2 posisao é uma function: exp: ([, setTech]) pra atualizar as inf
+  do estado.
 
  -> useEffect: é o hook que sobreponhe os metados de ciclo de vida que tinhamos
  anteriormente na aplicação que era os didMount etc.
+ recebe 2 params, 1 uma function, 2 um array de dependencias.
+ a function que passamos no 1 param é o codigo que queremos que execulte,
+ o 2 param é quando que queremos que esse codigo execulte.
+ no 2 param que é o array de dependencias vamos passar por exp todas as vars
+ que quando forem alteradas o useEffect precisa execultar de novo.
+ OBS: se deixar o array em branco, sem nem uma dependencia ele vai execultar
+ apenas uma vez, se colocarmos uma var o useEffect vai execultar toda vez
+ que essa var for alterada. Nesse exemplo quando mudar o count, muda o title
+ da pagina para o valor do counter
 
 -> useMemo: é usado para fazer algum tipo de calculo mais complexo, chamar
 functions, retornar valor etc. coisas que nao precisa ser chamas todas as vezes

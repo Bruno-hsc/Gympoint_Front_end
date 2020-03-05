@@ -41,10 +41,6 @@ export const Profile = styled.div`
     text-align: right;
     margin-right: 10px;
 
-    strong {
-      display: block;
-      color: #444444;
-    }
     button {
       display: block;
       margin-top: 2px;
@@ -57,3 +53,12 @@ export const Profile = styled.div`
 `;
 
 export const ActiveLink = styled(NavLink).attrs({})``;
+
+export const Icon = styled.div`
+  display: flex;
+  align-items: space-between;
+  strong {
+    color: #444444;
+    margin-left: 5px;
+  }
+`;

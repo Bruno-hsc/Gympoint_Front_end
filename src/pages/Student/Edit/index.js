@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Form } from '@unform/web';
-import { Scope, useField } from '@unform/core';
+
 import { Link } from 'react-router-dom';
 import { FaArrowLeft, FaUserPlus } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -9,7 +9,6 @@ import * as Yup from 'yup';
 import Input from '~/components/Input';
 
 import api from '~/services/api';
-import history from '~/services/history';
 
 import {
   Container,
@@ -20,24 +19,36 @@ import {
   DivForm02,
 } from './styles';
 
-export default function PlanForm() {
+export default function StudentEdit(params) {
+  // console.log(params);
   const formRef = useRef(null);
+  const { id } = params.match.params;
 
-  async function handleAddStudent(data, { reset }) {
+  async function loadStudent() {
+    const response = await api.get(`/students/${id}`);
+    formRef.current.setData({
+      name: response.data.name,
+      email: response.data.email,
+      age: response.data.age,
+      weight: response.data.weight,
+      height: response.data.height,
+    });
+  }
+
+  loadStudent();
+
+  async function updateStudent(data) {
     try {
       const schema = Yup.object().shape({
-        name: Yup.string().required('You must put a name'),
-        email: Yup.string()
-          .email('Enter a valid email')
-          .required('You must put an email'),
-        age: Yup.string().required('You must put the age'),
-        weight: Yup.string().required('You must put the weigth'),
-        height: Yup.string().required('You must put the height'),
+        name: Yup.string(),
+        email: Yup.string().email('Enter a valid email'),
+        age: Yup.string(),
+        weight: Yup.string(),
+        height: Yup.string(),
       });
       await schema.validate(data, {
         abortEarly: false,
       });
-      reset();
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errorMessages = {};
@@ -51,21 +62,17 @@ export default function PlanForm() {
     }
 
     try {
-      const student = await api.get('/students');
+      const response = await api.put(`/students/update/${id}`, data);
 
-      if (student.email !== data.email) {
-        const response = await api.post(`/students`, data);
-        toast.success('cadastrado');
-        console.log(student);
-      }
+      toast.success('The student has been updated');
     } catch (err) {
-      toast.error('Ja existe');
+      toast.error('E-mail already registered');
     }
   }
 
   return (
     <Container>
-      <Form ref={formRef} onSubmit={handleAddStudent}>
+      <Form ref={formRef} onSubmit={updateStudent}>
         <Header>
           <h1>Student Management</h1>
           <div>

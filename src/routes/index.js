@@ -7,6 +7,7 @@ import SignIn from '../pages/SignIn';
 
 import StudentList from '~/pages/Student/List';
 import StudentForm from '~/pages/Student/Form';
+import StudentEdit from '~/pages/Student/Edit';
 import PlanList from '~/pages/Plan/List';
 import PlanForm from '../pages/Plan/Form';
 import EnrollmentList from '~/pages/Enrollment/List';
@@ -20,7 +21,7 @@ export default function Routes() {
 
       <Route path="/students" exact component={StudentList} isPrivate />
       <Route path="/students/new" component={StudentForm} isPrivate />
-      <Route path="/students/:id/edit" component={StudentForm} isPrivate />
+      <Route path="/students/update/:id" component={StudentEdit} isPrivate />
 
       <Route path="/plans" exact component={PlanList} isPrivate />
       <Route path="/plans/new" component={PlanForm} isPrivate />
