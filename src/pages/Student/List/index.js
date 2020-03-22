@@ -148,7 +148,7 @@ export default function StudentList() {
                   <td>{student.email}</td>
                   <td>{student.age}</td>
                   <td>
-                    <Link to={`/students/update/${student.id}`}>Edit</Link>
+                    <Link to={`/students/update/${student.id}`}>View/Edit</Link>
                     <button
                       type="button"
                       onClick={() => {

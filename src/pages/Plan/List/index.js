@@ -30,12 +30,22 @@ export default function PlanList() {
       `/plans?title=${title}&page=${page}&q=${query}`
     );
 
+    const currencyFormat = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+
     const { plans: _plans, page: _page, last_page: _lastPage } = response.data;
 
     setIsFirstPage(Number(page) === 1);
     setIsLastPage(Number(page) === _lastPage);
 
-    setPlans(_plans);
+    setPlans(
+      _plans.map(p => ({
+        ...p,
+        formatedPrice: currencyFormat.format(p.price),
+      }))
+    );
     setCurrentPage(_page);
   }
 
@@ -146,9 +156,9 @@ export default function PlanList() {
                     {plan.duration}
                     <span> {plan.duration > 1 ? 'Months' : 'Month'}</span>
                   </td>
-                  <td>{plan.price}</td>
+                  <td>{plan.formatedPrice}</td>
                   <td>
-                    <Link to={`/plans/update/${plan.id}`}>Edit</Link>
+                    <Link to={`/plans/update/${plan.id}`}>View/Edit</Link>
                     <button
                       type="button"
                       onClick={() => {

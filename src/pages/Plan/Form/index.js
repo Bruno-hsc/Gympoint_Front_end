@@ -1,6 +1,5 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Form } from '@unform/web';
-import { Scope, useField } from '@unform/core';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft, FaUserPlus } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -9,7 +8,6 @@ import * as Yup from 'yup';
 import Input from '~/components/Input';
 
 import api from '~/services/api';
-import history from '~/services/history';
 
 import {
   Container,
@@ -23,85 +21,73 @@ import {
 export default function PlanForm() {
   const formRef = useRef(null);
 
-  async function handleAddStudent(data, { reset }) {
+  async function handleAddPlan(data, { reset }) {
+    const plan = await api.get('/plans');
     try {
       const schema = Yup.object().shape({
-        name: Yup.string().required('You must put a name'),
-        email: Yup.string()
-          .email('Enter a valid email')
-          .required('You must put an email'),
-        age: Yup.string().required('You must put the age'),
-        weight: Yup.string().required('You must put the weigth'),
-        height: Yup.string().required('You must put the height'),
+        title: Yup.string().required('You must put a title'),
+        duration: Yup.number().required('You must put a duration'),
+        price: Yup.number().required('You must put a price'),
       });
+      reset();
       await schema.validate(data, {
         abortEarly: false,
       });
+      const response = await api.post(`/plans/new`, data);
+
+      toast.success('The plan has been registered');
       reset();
     } catch (err) {
+      const validationErrors = {};
       if (err instanceof Yup.ValidationError) {
-        const errorMessages = {};
-
         err.inner.forEach(error => {
-          errorMessages[error.path] = error.message;
+          validationErrors[error.path] = error.message;
         });
 
-        formRef.current.setErrors(errorMessages);
+        formRef.current.setErrors(validationErrors);
+        return;
       }
-    }
-
-    try {
-      const student = await api.get('/students');
-
-      if (student.email !== data.email) {
-        const response = await api.post(`/students`, data);
-        toast.success('cadastrado');
-        console.log(student);
-      }
-    } catch (err) {
-      toast.error('Ja existe');
+      const { response } = err;
+      toast.error(response.data.error);
     }
   }
 
   return (
     <Container>
-      <Form ref={formRef} onSubmit={handleAddStudent}>
+      <Form ref={formRef} onSubmit={handleAddPlan}>
         <Header>
-          <h1>Student Management</h1>
+          <h1>Record Plans</h1>
           <div>
-            <Link to="/students">
+            <Link to="/plans">
               <FaArrowLeft size={14} color="#fff" />
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label>Home</label>
+              <label>Plans</label>
             </Link>
 
             <Button>
-              <FaUserPlus size={14} color="#fff" />
-              <button type="submit">Save</button>
+              <span>
+                <FaUserPlus size={14} color="#fff" />
+              </span>
+              Save
             </Button>
           </div>
         </Header>
 
         <Content>
           <DivForm01>
-            <strong>Full Name</strong>
-            <Input name="name" type="text" placeholder="name" />
-            <strong>Email address</strong>
-            <Input name="email" type="text" placeholder="Email" />
+            <strong>Title</strong>
+            <Input name="title" type="text" placeholder="Title" />
           </DivForm01>
 
           <DivForm02>
             <div>
-              <strong>Age</strong>
-              <Input name="age" type="text" />
+              <strong>Duration</strong>
+              <Input name="duration" type="text" placeholder="Duration" />
             </div>
+
             <div>
-              <strong>Weight</strong>
-              <Input name="weight" type="text" />
-            </div>
-            <div>
-              <strong>Height</strong>
-              <Input name="height" type="text" />
+              <strong>Price</strong>
+              <Input name="price" type="text" placeholder="Price" />
             </div>
           </DivForm02>
         </Content>

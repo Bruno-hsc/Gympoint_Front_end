@@ -49,24 +49,22 @@ export default function StudentEdit(params) {
       await schema.validate(data, {
         abortEarly: false,
       });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errorMessages = {};
-
-        err.inner.forEach(error => {
-          errorMessages[error.path] = error.message;
-        });
-
-        formRef.current.setErrors(errorMessages);
-      }
-    }
-
-    try {
+      // eslint-disable-next-line no-unused-vars
       const response = await api.put(`/students/update/${id}`, data);
 
       toast.success('The student has been updated');
     } catch (err) {
-      toast.error('E-mail already registered');
+      const validationErrors = {};
+      if (err instanceof Yup.ValidationError) {
+        err.inner.forEach(error => {
+          validationErrors[error.path] = error.message;
+        });
+
+        formRef.current.setErrors(validationErrors);
+        return;
+      }
+      const { response } = err;
+      toast.error(response.data.error);
     }
   }
 
@@ -74,7 +72,7 @@ export default function StudentEdit(params) {
     <Container>
       <Form ref={formRef} onSubmit={updateStudent}>
         <Header>
-          <h1>Student Management</h1>
+          <h1>Edit Student</h1>
           <div>
             <Link to="/students">
               <FaArrowLeft size={14} color="#fff" />
@@ -82,9 +80,9 @@ export default function StudentEdit(params) {
               <label>Home</label>
             </Link>
 
-            <Button>
+            <Button type="submit">
               <FaUserPlus size={14} color="#fff" />
-              <button type="submit">Save</button>
+              <span>Save</span>
             </Button>
           </div>
         </Header>

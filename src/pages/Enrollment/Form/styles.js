@@ -8,6 +8,9 @@ export const Container = styled.div`
   width: 100%;
   max-width: 80%;
   font-family: Roboto;
+  label {
+    font-weight: bold;
+  }
 `;
 
 export const Header = styled.div`
@@ -19,7 +22,6 @@ export const Header = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     a {
       display: flex;
       align-items: center;
@@ -67,11 +69,13 @@ export const Button = styled.button`
   }
 
   span {
-    margin-left: 4px;
+    margin-right: 4px;
   }
 `;
 
 export const Content = styled.div`
+  div {
+  }
   background: #fff;
   padding: 25px;
   color: #444444;
@@ -90,4 +94,20 @@ export const DivForm02 = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  .change {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: #fff;
+    height: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    margin: 10px 0;
+    &:disabled {
+      background: #dcdcdc;
+    }
+  }
 `;
